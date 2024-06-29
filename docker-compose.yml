@@ -1,0 +1,12 @@
+version: '3.9'
+name: cloco_assignment
+services:
+  api:
+    image: assignment/cloco_assignment:latest
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - '3000:3000'
+    env_file: .env

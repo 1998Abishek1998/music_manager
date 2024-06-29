@@ -1,0 +1,32 @@
+# Ignore dist directory (generated build files)
+/dist/
+
+# Ignore .env file (environment variables file)
+.env
+
+# Ignore node_modules directory (installed dependencies)
+/node_modules/
+
+# Optionally ignore any other files or directories
+# /logs/
+# /build/
+# .DS_Store  # macOS system file, if needed
+
+# Ignore editor-specific files
+# .vscode/
+# .idea/
+
+# Ignore npm debug log
+npm-debug.log*
+
+# Ignore yarn errors file
+yarn-error.log*
+
+# Ignore TypeScript build artifacts
+*.tsbuildinfo
+
+# Ignore package-lock.json file for npm
+package-lock.json
+
+# Ignore yarn.lock file for yarn
+yarn.lock
