@@ -37,7 +37,6 @@ const Artists = () => {
 
   const downloadCsv = () => {
     fetchArtistsCsv().then((data) => {
-      console.log(data)
       const blob = new Blob([data], { type: 'text/csv' });
       const a = document.createElement('a');
       a.style.display = 'none';

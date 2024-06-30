@@ -83,7 +83,6 @@ class UserModel {
         updated_at: date,
       }).returning('id').execute()
 
-      console.log(artist, ids)
       if (payload.role_id === Role.ARTIST && artist && ids[0].id) {
         await tx.insertInto('artists').values({
           name: artist.name,

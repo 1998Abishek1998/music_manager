@@ -1,12 +1,10 @@
 import { removeEmpty } from '../utils/sanitize';
 
-const request = async (method, url, includeAuth, params = {}, isCsv = false) => {
+const request = async (method, url, includeAuth, params = {}, isCsv = false, isAudio = false) => {
   const req = {
     method: method,
     headers: {
-      headers: {
-        'Accept': isCsv ? 'text/csv' : 'application/json',
-      },
+      'Accept': isCsv ? 'text/csv' : (isAudio ? 'audio/mpeg' : 'application/json'),
     },
   };
 
@@ -15,7 +13,7 @@ const request = async (method, url, includeAuth, params = {}, isCsv = false) => 
     req.headers = {
       ...req.headers,
       'x-user': localStorage.getItem('roleId'),
-    }
+    };
   }
 
   if (method === 'GET') {
@@ -37,6 +35,8 @@ const request = async (method, url, includeAuth, params = {}, isCsv = false) => 
 
   if (isCsv) {
     return await res.text();
+  } else if (isAudio) {
+    return await res.blob();
   } else {
     return await res.json();
   }

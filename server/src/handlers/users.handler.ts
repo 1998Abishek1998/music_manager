@@ -49,7 +49,6 @@ export const updateUser = async (req: Request, res: Response) => {
 
   const { id } = req.params
 
-  console.log(+id, body)
   await users.updateUsers(body, +id)
 
   res.json({ message: 'Sucessfully updated user' })

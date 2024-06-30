@@ -1,7 +1,10 @@
-import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useContext, useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { fetchSingleMusic } from '../../../api/apiClient'
 import { Card, Col, List, Row, Typography } from 'antd'
+import MusicUploader from './MusicUploader';
+import MusicPlayer from './MusicPlayer';
+import { AuthContext } from '../../../store/AuthContext';
 const { Title, Text } = Typography;
 
 const cardStyle = {
@@ -24,12 +27,15 @@ const containerStyle = {
 const SingleSongView = () => {
   const location = useLocation()
   const [data, setData] = useState(null)
-
+  const [reload, setReload] = useState(false)
+  const { userId, roleId } = useContext(AuthContext)
+  const navigate = useNavigate()
   useEffect(() => {
     fetchSingleMusic(location.pathname.split('/')[3]).then((res) => {
+      if (roleId === 3 && userId !== res.data.artist.user_id) navigate('/dashboard/songs')
       setData(res.data)
     })
-  }, [location])
+  }, [location, navigate, reload, roleId, userId])
 
   const renderListItem = (label, value) => (
     <List.Item>
@@ -42,7 +48,7 @@ const SingleSongView = () => {
       {
         data ?
           <div style={containerStyle}>
-            <Title level={2} style={titleStyle}>Music and Artist Information</Title>
+            <Title level={2} style={titleStyle}>{data.artist.name}`s  Music</Title>
             <Row gutter={[16, 16]}>
               <Col xs={24} md={12}>
                 <Card title="Music Information" bordered={false} style={cardStyle}>
@@ -53,6 +59,11 @@ const SingleSongView = () => {
                     {renderListItem("Created At", data.music.created_at)}
                     {renderListItem("Updated At", data.music.updated_at)}
                   </List>
+                  {
+                    data.music.public_id ?
+                      <MusicPlayer publicId={data.music.public_id} title={data.music.title} id={Number(location.pathname.split('/')[3])} /> :
+                      <MusicUploader id={Number(location.pathname.split('/')[3])} setReload={setReload} reload={reload} />
+                  }
                 </Card>
               </Col>
               <Col xs={24} md={12}>

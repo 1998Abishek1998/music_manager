@@ -93,9 +93,6 @@ export const uploadCsv = async (req: Request, res: Response) => {
       .on('data', (data: any) => results.push(data))
       .on('end', async () => {
         if (!req.file) return new BadRequestError('File not found.')
-
-        console.log(results)
-
         fs.unlinkSync(req?.file.path);
         return res.status(200).json({ message: 'CSV file uploaded and processed successfully' });
       });

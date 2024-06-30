@@ -31,8 +31,6 @@ export const LoginUser = async (req: Request, res: Response) => {
 
   if (user.role_id === 3) {
     artist = await users.fetchArtistByUser(user.id || 0)
-
-    console.log(artist)
   }
 
   const token = generateToken({ userId: user.id ? user.id : 0 }, user.role_id);

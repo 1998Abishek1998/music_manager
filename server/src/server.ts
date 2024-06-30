@@ -22,12 +22,7 @@ async function server() {
   app.use(express.urlencoded({ extended: true }));
 
   app.use('/api', routes);
-
-  console.log(newDateOnly())
   app.use(handleError)
-
-  // handling 404 response
-
 
   return app
 }

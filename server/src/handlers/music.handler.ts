@@ -2,43 +2,37 @@ import { Request, Response } from 'express';
 import instanceConfig from '../configs/instance.config';
 import { BadRequestError } from '../utils/error';
 import { formatDateOnly, newDate } from '../utils/date';
-import cloudinaryConfig from '../configs/cloudinary.config';
-import cloudinary from '../configs/cloudinary.config';
+import fs from 'fs'
+import path from 'path'
 
-export const uploadMusicToCloudinary = async (req: Request, res: Response) => {
-
-
+export const uploadToserver = async (req: Request, res: Response) => {
   if (!req.file) throw new BadRequestError('Please provide file')
-  const fName = req.file.originalname.split('.')[0];
-
-  const uploadAudio = await cloudinary.uploader.upload(req.file.path);
-
-  res.status(200).json({ audioResponse: uploadAudio });
+  const { id } = req.params
+  await instanceConfig.music.uploadSongSuccess(+id, { public_id: req.file.originalname, secure_url: `./uploads/${req.file.originalname}` })
+  res.send({ message: 'Successfully uploaded files' })
 }
 
-export const streamMusicFromCloudinary = async (req: Request, res: Response) => {
+export async function streamServerMusic(req: Request, res: Response) {
   try {
-    const publicId = req.params.publicId;
+    const key = req.params.publicId;
+    const music = path.join(__dirname, '../../../uploads', key);
 
-    const streamUrl = cloudinaryConfig.url(publicId, {
-      resource_type: 'video',
-      secure: true
+    const stat = fs.statSync(music);
+    let readStream;
+
+    res.header({
+      'Content-Type': 'audio/mpeg',
+      'Content-Length': stat.size
     });
 
-    res.redirect(streamUrl);
+    readStream = fs.createReadStream(music);
+
+    readStream.pipe(res);
   } catch (error) {
-    console.error('Error streaming file to Cloudinary:', error);
-    throw new BadRequestError(error)
+    console.error('Error streaming music:', error);
+    res.status(500).send('An error occurred while streaming the music.');
   }
 }
-
-export const createMusic = async (req: Request, res: Response) => {
-  instanceConfig.music.createMusic(req.body);
-  res.status(201).json({
-    message: 'Success'
-  });
-}
-
 
 export const fetchMusicById = async (req: Request, res: Response) => {
   const musicId = parseInt(req.params.id);
@@ -97,5 +91,10 @@ export const updateMusic = async (req: Request, res: Response) => {
 export const deleteMusic = async (req: Request, res: Response) => {
   const musicId = parseInt(req.params.id);
   await instanceConfig.music.deleteMusic(musicId);
+  res.status(200).json({ message: 'Success' });
+}
+
+export const createMusic = async (req: Request, res: Response) => {
+  await instanceConfig.music.createMusic(req.body);
   res.status(200).json({ message: 'Success' });
 }

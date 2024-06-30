@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { fetchSingleArtist } from '../../../api/apiClient'
 import CustomCard from '../../../components/shared/Card'
@@ -6,6 +6,7 @@ import CustomCard from '../../../components/shared/Card'
 const SingleArtistView = () => {
   const location = useLocation()
   const navigate = useNavigate()
+  const handleNavigation = useCallback((e) => navigate(`/dashboard/songs/${e.id}`), [navigate])
 
   const [musicData, setMusicData] = useState([])
 
@@ -24,7 +25,7 @@ const SingleArtistView = () => {
       <div className=" flex items-center justify-start">
         <div className="flex flex-wrap justify-start gap-6">
           {
-            musicData.length > 0 && musicData.map(itm => <CustomCard key={itm.id} songData={itm} />
+            musicData.length > 0 && musicData.map(itm => <CustomCard key={itm.id} songData={itm} handleCardClick={handleNavigation} />
             )
           }
         </div>
