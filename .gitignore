@@ -1,5 +1,6 @@
 # Ignore dist directory (generated build files)
 /dist/
+/uploads/
 
 # Ignore .env file (environment variables file)
 .env
