@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { fetchSingleMusic } from '../../../api/apiClient'
 import { Card, Col, List, Row, Typography } from 'antd'
@@ -29,7 +29,13 @@ const SingleSongView = () => {
   const [data, setData] = useState(null)
   const [reload, setReload] = useState(false)
   const { userId, roleId } = useContext(AuthContext)
+  const [playerError, setPlayerError] = useState(null)
+
+  const setErr = useCallback((err) => setPlayerError(err), [])
+  const setRel = useCallback((rel) => setReload(rel), [])
+
   const navigate = useNavigate()
+
   useEffect(() => {
     fetchSingleMusic(location.pathname.split('/')[3]).then((res) => {
       if (roleId === 3 && userId !== res.data.artist.user_id) navigate('/dashboard/songs')
@@ -60,9 +66,9 @@ const SingleSongView = () => {
                     {renderListItem("Updated At", data.music.updated_at)}
                   </List>
                   {
-                    data.music.public_id ?
-                      <MusicPlayer publicId={data.music.public_id} title={data.music.title} id={Number(location.pathname.split('/')[3])} /> :
-                      <MusicUploader id={Number(location.pathname.split('/')[3])} setReload={setReload} reload={reload} />
+                    data.music.public_id && !playerError ?
+                      <MusicPlayer publicId={data.music.public_id} title={data.music.title} id={Number(location.pathname.split('/')[3])} setPlayerError={setErr} /> :
+                      <MusicUploader id={Number(location.pathname.split('/')[3])} setReload={setRel} reload={reload} />
                   }
                 </Card>
               </Col>

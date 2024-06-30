@@ -46,8 +46,8 @@ class ArtistModel {
     return paginateResponse(result, filter.offset ? Number(filter.offset) : 0, filter.limit ? Number(filter.limit) : 0, Number(count?.count));
   }
 
-  createArtistByCsv(data: any[]) {
-    return ArtistModel.db.insertInto('artists').values(data).execute()
+  async createArtistByCsv(data: any[]) {
+    return ArtistModel.db.insertInto('artists').values(data).execute().catch(e => console.log(e))
   }
 
   async getArtistById(id: number) {

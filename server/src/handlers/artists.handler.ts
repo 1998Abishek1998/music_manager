@@ -65,6 +65,7 @@ export const getArtistCsvData = async (req: Request, res: Response) => {
       { id: 'name', title: 'name' },
       { id: 'dob', title: 'dob' },
       { id: 'gender', title: 'gender' },
+      { id: 'user_id', title: 'user_id' },
       { id: 'first_release_year', title: 'first_release_year' },
       { id: 'address', title: 'address' },
       { id: 'created_at', title: 'created_At' },
@@ -94,6 +95,11 @@ export const uploadCsv = async (req: Request, res: Response) => {
       .on('end', async () => {
         if (!req.file) return new BadRequestError('File not found.')
         fs.unlinkSync(req?.file.path);
+
+        if (results.length > 0)
+          await instanceConfig.artist.createArtistByCsv(results);
+
+
         return res.status(200).json({ message: 'CSV file uploaded and processed successfully' });
       });
   } catch (error) {
@@ -101,8 +107,6 @@ export const uploadCsv = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Invalid details provided.' });
   }
 
-  if (results.length > 0)
-    await instanceConfig.artist.createArtistByCsv(results);
 };
 
 

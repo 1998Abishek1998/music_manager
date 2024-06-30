@@ -15,6 +15,7 @@ import {
 import EditArtistForm from './EditArtistForm';
 import { useNavigate } from 'react-router-dom';
 import useCanAccess from '../../../hooks/useCanAccess';
+import CsvUploader from './ArtistCsvUploader';
 
 const Artists = () => {
 
@@ -225,8 +226,10 @@ const Artists = () => {
     <>
       <div className='flex justify-end m-2 gap-2'>
         {
-          canAccess(2) &&
-          <PlainButton onClick={() => downloadCsv()}> Download Csv</PlainButton>
+          canAccess(2) && <>
+            <PlainButton onClick={() => downloadCsv()}> Download Csv</PlainButton>
+            <CsvUploader setReload={setCallAgain} reload={callAgain} />
+          </>
         }
         <PlainButton onClick={showModal}> Add Artist</PlainButton>
       </div>

@@ -1,6 +1,6 @@
 import request from './request'
 
-const url = 'http://localhost:3000/api' || '/api'
+export const url = 'http://localhost:3000/api' || '/api'
 
 export const musicUploadUrl = (id) => `${url}/v1/musics/${id}`
 export const imageStreamUrl = (id, sec_url) => request('GET', `${url}/v1/musics/stream-music/${id}/${sec_url}`, true, {}, false, true)

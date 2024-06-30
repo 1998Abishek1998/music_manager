@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react';
 import { imageStreamUrl } from '../../../api/apiClient';
 
-const MusicPlayer = ({ id, title, publicId }) => {
+const MusicPlayer = ({ id, title, publicId, setPlayerError }) => {
   const [src, setSrc] = useState('');
 
   useEffect(() => {
@@ -12,13 +12,15 @@ const MusicPlayer = ({ id, title, publicId }) => {
         const blob = await imageStreamUrl(id, publicId);
         const audioUrl = URL.createObjectURL(blob);
         setSrc(audioUrl);
+        setPlayerError(null)
       } catch (error) {
+        setPlayerError(error)
         console.error('Error fetching audio:', error);
       }
     };
 
     fetchAudio();
-  }, [id, publicId]);
+  }, [id, publicId, setPlayerError]);
 
   return (<>
     <div className='flex items-center justify-between'>
@@ -38,7 +40,8 @@ const MusicPlayer = ({ id, title, publicId }) => {
 MusicPlayer.propTypes = {
   id: PropTypes.number,
   title: PropTypes.string,
-  publicId: PropTypes.string
+  publicId: PropTypes.string,
+  setPlayerError: PropTypes.func
 }
 
 export default MusicPlayer
